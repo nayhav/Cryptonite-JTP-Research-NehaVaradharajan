@@ -78,7 +78,7 @@ def plot_roc_curve(y_test, y_proba, model_name):
     return auc_score
 
 def hyperparameter_tuning(model, param_grid, X_train, y_train):
-    print(f"🔍 Hyperparameter tuning for {model.__class__.__name__} ...")
+    print(f" Hyperparameter tuning for {model.__class__.__name__} ...")
     grid = GridSearchCV(model, param_grid, cv=5, scoring='roc_auc', n_jobs=-1)
     grid.fit(X_train, y_train)
     print(f"Best params for {model.__class__.__name__}: {grid.best_params_}")
@@ -86,7 +86,7 @@ def hyperparameter_tuning(model, param_grid, X_train, y_train):
 
 def evaluate_model(model, X_train, y_train, X_test, y_test):
     model_name = model.__class__.__name__
-    print(f"\n🧠 Training and evaluating: {model_name}")
+    print(f"\n Training and evaluating: {model_name}")
 
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
@@ -97,7 +97,7 @@ def evaluate_model(model, X_train, y_train, X_test, y_test):
         y_proba = model.decision_function(X_test)
         y_proba = (y_proba - y_proba.min()) / (y_proba.max() - y_proba.min())
 
-    print(f"\n📄 Classification Report for {model_name}:\n")
+    print(f"\n Classification Report for {model_name}:\n")
     print(classification_report(y_test, y_pred))
 
     cm = confusion_matrix(y_test, y_pred)
@@ -123,7 +123,7 @@ def plot_feature_importances(model, feature_names):
         print("Model does not provide feature importances.")
 
 def main():
-    filepath = "processed.cleveland.data"  # your data file in the same folder
+    filepath = "processed.cleveland.data"  
     X, y = load_and_preprocess_data(filepath)
 
     # Split data
@@ -164,14 +164,14 @@ def main():
     plot_feature_importances(rf_model, X.columns)
 
     # Summary Table
-    print("\n📋 MODEL PERFORMANCE SUMMARY")
+    print("\n Performance Summary")
     print("-" * 40)
     print(f"{'Model':<25} {'Accuracy':<10} {'ROC AUC':<10}")
     print("-" * 40)
     for res in results:
         print(f"{res['Model']:<25} {res['Accuracy']:<10.3f} {res['ROC_AUC']:<10.3f}")
     print("-" * 40)
-    print("✅ Done. You’re ready to present.")
+    print("Models Implemented")
 
 if __name__ == "__main__":
     main()
