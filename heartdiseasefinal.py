@@ -160,7 +160,7 @@ def main():
 
     # Feature importance for Random Forest
     rf_model = next(res['TrainedModel'] for res in results if res['Model'] == "RandomForestClassifier")
-    print("\n🔎 Feature Importance for Random Forest:")
+    print("\n Feature Importance for Random Forest:")
     plot_feature_importances(rf_model, X.columns)
 
     # Summary Table
