@@ -1,9 +1,11 @@
+# Importing necessary libraries for data manipulation, visualization, and modeling
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 plt.ion()
 import seaborn as sns
 
+# Importing preprocessing and modeling tools from sklearn
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
@@ -13,36 +15,46 @@ from sklearn.svm import SVC
 from sklearn.metrics import (classification_report, confusion_matrix, roc_curve, roc_auc_score,
                              accuracy_score)
 
+# Importing XGBoost model
 from xgboost import XGBClassifier
 
-# Set random seed
+# Setting a seed value to ensure results are consistent each time we run the code
 RANDOM_STATE = 42
 
+# Step 1: Load and preprocess the data
 def load_and_preprocess_data(filepath):
+    # Define the column names based on the dataset's documentation
     columns = [
         'age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg',
         'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'num'
     ]
+    # Read the CSV file, marking '?' as missing values
     df = pd.read_csv(filepath, names=columns, na_values='?')
+
+    # Convert the target variable into binary (0 = no disease, 1 = has disease)
     df['num'] = df['num'].apply(lambda x: 1 if x > 0 else 0)
 
+    # Display first few rows and check for missing values
     print("----- Dataset Head -----")
     print(df.head())
     print("\n----- Missing Values per Column -----")
     print(df.isnull().sum())
 
-    target = 'num'
+    target = 'num'  # This is the column we want to predict
 
+    # Use median to fill missing values
     imputer = SimpleImputer(strategy='median')
     X = df.drop(columns=[target])
     y = df[target]
-
     X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
+
+    # Standardize the data to bring all features to the same scale
     scaler = StandardScaler()
     X_scaled = pd.DataFrame(scaler.fit_transform(X_imputed), columns=X_imputed.columns)
 
     return X_scaled, y
 
+# Function to plot confusion matrix for visualizing performance
 def plot_confusion_matrix(cm, model_name):
     plt.figure(figsize=(5, 4))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', cbar=False)
@@ -51,6 +63,7 @@ def plot_confusion_matrix(cm, model_name):
     plt.ylabel('Actual')
     plt.show()
 
+# Function to plot ROC curve and calculate AUC score
 def plot_roc_curve(y_test, y_proba, model_name):
     fpr, tpr, _ = roc_curve(y_test, y_proba)
     auc_score = roc_auc_score(y_test, y_proba)
@@ -66,6 +79,7 @@ def plot_roc_curve(y_test, y_proba, model_name):
 
     return auc_score
 
+# Function to tune hyperparameters using GridSearchCV
 def hyperparameter_tuning(model, param_grid, X_train, y_train):
     print(f"\nHyperparameter tuning for {model.__class__.__name__} ...")
     grid = GridSearchCV(model, param_grid, cv=5, scoring='roc_auc', n_jobs=-1)
@@ -73,6 +87,7 @@ def hyperparameter_tuning(model, param_grid, X_train, y_train):
     print(f"Best params for {model.__class__.__name__}: {grid.best_params_}")
     return grid.best_estimator_
 
+# Function to evaluate model performance using various metrics
 def evaluate_model(model, X_train, y_train, X_test, y_test):
     model_name = model.__class__.__name__
     print(f"\nTraining and evaluating: {model_name}")
@@ -80,23 +95,29 @@ def evaluate_model(model, X_train, y_train, X_test, y_test):
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
+    # Get predicted probabilities for ROC-AUC
     if hasattr(model, "predict_proba"):
         y_proba = model.predict_proba(X_test)[:, 1]
     else:
+        # For SVM which uses decision_function
         y_proba = model.decision_function(X_test)
         y_proba = (y_proba - y_proba.min()) / (y_proba.max() - y_proba.min())
 
+    # Print classification report
     print(f"\nClassification Report for {model_name}:\n")
     print(classification_report(y_test, y_pred))
 
+    # Plot confusion matrix
     cm = confusion_matrix(y_test, y_pred)
     plot_confusion_matrix(cm, model_name)
 
+    # Plot ROC curve
     auc_score = plot_roc_curve(y_test, y_proba, model_name)
     accuracy = accuracy_score(y_test, y_pred)
 
     return accuracy, auc_score, model
 
+# Function to plot the importance of each feature (only for tree-based models)
 def plot_feature_importances(model, feature_names):
     if hasattr(model, "feature_importances_"):
         importances = model.feature_importances_
@@ -111,14 +132,18 @@ def plot_feature_importances(model, feature_names):
     else:
         print("Model does not provide feature importances.")
 
+# Main workflow
 def main():
-    filepath = "processed.cleveland.data"  
+    # Load and prepare the dataset
+    filepath = "processed.cleveland.data"
     X, y = load_and_preprocess_data(filepath)
 
+    # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=RANDOM_STATE, stratify=y
     )
 
+    # Define models and their hyperparameter grids
     models_and_params = [
         (
             LogisticRegression(random_state=RANDOM_STATE, max_iter=1000),
@@ -140,6 +165,7 @@ def main():
 
     results = []
 
+    # Loop over each model, tune hyperparameters, train and evaluate
     for model, params in models_and_params:
         best_model = hyperparameter_tuning(model, params, X_train, y_train)
         accuracy, auc, trained_model = evaluate_model(best_model, X_train, y_train, X_test, y_test)
@@ -150,17 +176,17 @@ def main():
             'TrainedModel': trained_model
         })
 
-    # Feature importance for Random Forest
+    # Plot feature importance for Random Forest
     rf_model = next(res['TrainedModel'] for res in results if res['Model'] == "RandomForestClassifier")
     print("\nFeature Importance for Random Forest:")
     plot_feature_importances(rf_model, X.columns)
 
-    # Feature importance for XGBoost
+    # Plot feature importance for XGBoost
     xgb_model = next(res['TrainedModel'] for res in results if res['Model'] == "XGBClassifier")
     print("\nFeature Importance for XGBoost:")
     plot_feature_importances(xgb_model, X.columns)
 
-    # Summary Table
+    # Display performance summary
     print("\nPerformance Summary")
     print("-" * 40)
     print(f"{'Model':<25} {'Accuracy':<10} {'ROC AUC':<10}")
@@ -170,5 +196,6 @@ def main():
     print("-" * 40)
     print("Models Implemented")
 
+# Run the script
 if __name__ == "__main__":
     main()
