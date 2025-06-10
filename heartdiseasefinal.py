@@ -1,11 +1,6 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 plt.ion()
 import seaborn as sns
 
@@ -18,20 +13,17 @@ from sklearn.svm import SVC
 from sklearn.metrics import (classification_report, confusion_matrix, roc_curve, roc_auc_score,
                              accuracy_score)
 
-# Set random seed for reproducibility
+from xgboost import XGBClassifier
+
+# Set random seed
 RANDOM_STATE = 42
 
 def load_and_preprocess_data(filepath):
-    # Define column names based on UCI dataset documentation
     columns = [
         'age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg',
         'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'num'
     ]
-    
-    # Load dataset with column names, treating '?' as NaN
     df = pd.read_csv(filepath, names=columns, na_values='?')
-    
-    # Convert target to binary: 0 = no disease, 1 = disease
     df['num'] = df['num'].apply(lambda x: 1 if x > 0 else 0)
 
     print("----- Dataset Head -----")
@@ -41,21 +33,18 @@ def load_and_preprocess_data(filepath):
 
     target = 'num'
 
-    # Impute missing values with median
     imputer = SimpleImputer(strategy='median')
     X = df.drop(columns=[target])
     y = df[target]
 
     X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
-
-    # Scale features
     scaler = StandardScaler()
     X_scaled = pd.DataFrame(scaler.fit_transform(X_imputed), columns=X_imputed.columns)
 
     return X_scaled, y
 
 def plot_confusion_matrix(cm, model_name):
-    plt.figure(figsize=(5,4))
+    plt.figure(figsize=(5, 4))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', cbar=False)
     plt.title(f'Confusion Matrix - {model_name}')
     plt.xlabel('Predicted')
@@ -66,9 +55,9 @@ def plot_roc_curve(y_test, y_proba, model_name):
     fpr, tpr, _ = roc_curve(y_test, y_proba)
     auc_score = roc_auc_score(y_test, y_proba)
 
-    plt.figure(figsize=(6,5))
+    plt.figure(figsize=(6, 5))
     plt.plot(fpr, tpr, label=f'ROC curve (area = {auc_score:.3f})')
-    plt.plot([0,1], [0,1], 'k--')
+    plt.plot([0, 1], [0, 1], 'k--')
     plt.title(f'ROC Curve - {model_name}')
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
@@ -78,7 +67,7 @@ def plot_roc_curve(y_test, y_proba, model_name):
     return auc_score
 
 def hyperparameter_tuning(model, param_grid, X_train, y_train):
-    print(f" Hyperparameter tuning for {model.__class__.__name__} ...")
+    print(f"\nHyperparameter tuning for {model.__class__.__name__} ...")
     grid = GridSearchCV(model, param_grid, cv=5, scoring='roc_auc', n_jobs=-1)
     grid.fit(X_train, y_train)
     print(f"Best params for {model.__class__.__name__}: {grid.best_params_}")
@@ -86,18 +75,18 @@ def hyperparameter_tuning(model, param_grid, X_train, y_train):
 
 def evaluate_model(model, X_train, y_train, X_test, y_test):
     model_name = model.__class__.__name__
-    print(f"\n Training and evaluating: {model_name}")
+    print(f"\nTraining and evaluating: {model_name}")
 
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
     if hasattr(model, "predict_proba"):
-        y_proba = model.predict_proba(X_test)[:,1]
+        y_proba = model.predict_proba(X_test)[:, 1]
     else:
         y_proba = model.decision_function(X_test)
         y_proba = (y_proba - y_proba.min()) / (y_proba.max() - y_proba.min())
 
-    print(f"\n Classification Report for {model_name}:\n")
+    print(f"\nClassification Report for {model_name}:\n")
     print(classification_report(y_test, y_pred))
 
     cm = confusion_matrix(y_test, y_pred)
@@ -113,7 +102,7 @@ def plot_feature_importances(model, feature_names):
         importances = model.feature_importances_
         indices = np.argsort(importances)[::-1]
 
-        plt.figure(figsize=(10,6))
+        plt.figure(figsize=(10, 6))
         sns.barplot(x=importances[indices], y=np.array(feature_names)[indices])
         plt.title("Feature Importances")
         plt.xlabel("Importance")
@@ -126,11 +115,10 @@ def main():
     filepath = "processed.cleveland.data"  
     X, y = load_and_preprocess_data(filepath)
 
-    # Split data
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=RANDOM_STATE, stratify=y)
+        X, y, test_size=0.2, random_state=RANDOM_STATE, stratify=y
+    )
 
-    # Define models and parameter grids for tuning
     models_and_params = [
         (
             LogisticRegression(random_state=RANDOM_STATE, max_iter=1000),
@@ -143,6 +131,10 @@ def main():
         (
             SVC(random_state=RANDOM_STATE, probability=True),
             {'C': [0.1, 1, 10], 'kernel': ['linear', 'rbf']}
+        ),
+        (
+            XGBClassifier(random_state=RANDOM_STATE, use_label_encoder=False, eval_metric='logloss'),
+            {'n_estimators': [50, 100, 150], 'max_depth': [3, 5, 7], 'learning_rate': [0.01, 0.1, 0.2]}
         )
     ]
 
@@ -160,11 +152,16 @@ def main():
 
     # Feature importance for Random Forest
     rf_model = next(res['TrainedModel'] for res in results if res['Model'] == "RandomForestClassifier")
-    print("\n Feature Importance for Random Forest:")
+    print("\nFeature Importance for Random Forest:")
     plot_feature_importances(rf_model, X.columns)
 
+    # Feature importance for XGBoost
+    xgb_model = next(res['TrainedModel'] for res in results if res['Model'] == "XGBClassifier")
+    print("\nFeature Importance for XGBoost:")
+    plot_feature_importances(xgb_model, X.columns)
+
     # Summary Table
-    print("\n Performance Summary")
+    print("\nPerformance Summary")
     print("-" * 40)
     print(f"{'Model':<25} {'Accuracy':<10} {'ROC AUC':<10}")
     print("-" * 40)
