@@ -1,93 +1,101 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-plt.ion()
 import seaborn as sns
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.cluster import KMeans
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.cluster import KMeans
 
-# Step 1: Load and preprocess the data
-def load_data(filepath):
-    # Load only necessary rows to avoid memory overload
-    df = pd.read_csv(filepath, sep=';', low_memory=False, na_values='?', parse_dates=[[0, 1]],
+# Step 1: Load and clean data
+def load(path):
+    df = pd.read_csv(path, sep=';', low_memory=False, na_values='?', parse_dates=[[0, 1]],
                      infer_datetime_format=True, index_col='Date_Time')
-
     df = df.dropna()
-    
-    # Convert columns to numeric
     for col in df.columns:
         df[col] = pd.to_numeric(df[col], errors='coerce')
-    
-    # Keep only a few features for simplicity
     df = df[['Global_active_power', 'Global_reactive_power', 'Voltage', 'Global_intensity']]
     df = df.dropna()
-
     return df
 
-# Step 2: Split into features and target
-def prepare_data(df):
-    X = df.drop('Global_active_power', axis=1)
+# Step 2: Prepare data for training
+def prepare(df):
+    x = df.drop('Global_active_power', axis=1)
     y = df['Global_active_power']
-
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+    x_scaled = scaler.fit_transform(x)
+    return train_test_split(x_scaled, y, test_size=0.2, random_state=42)
 
-    return train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+# Step 3: Evaluate and run models
+def score(name, model, xtest, ytest, ypred):
+    rmse = np.sqrt(mean_squared_error(ytest, ypred))
+    r2 = r2_score(ytest, ypred)
+    print(f"{name}: RMSE={rmse:.3f}, R2={r2:.3f}")
+    return rmse, r2
 
-# Step 3: Train and evaluate regression models
-def evaluate_model(name, model, X_test, y_test, y_pred):
-    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-    r2 = r2_score(y_test, y_pred)
-    print(f"{name} - RMSE: {rmse:.3f}, R² Score: {r2:.3f}")
+def runmodels(xtrain, xtest, ytrain, ytest):
+    results = {}
 
-def regression_models(X_train, X_test, y_train, y_test):
-    # Linear Regression
-    lr = LinearRegression()
-    lr.fit(X_train, y_train)
-    y_pred_lr = lr.predict(X_test)
-    evaluate_model("Linear Regression", lr, X_test, y_test, y_pred_lr)
+    model1 = LinearRegression()
+    model1.fit(xtrain, ytrain)
+    pred1 = model1.predict(xtest)
+    print("Linear done")
+    results["Linear"] = score("Linear", model1, xtest, ytest, pred1)
 
-    # Decision Tree Regressor
-    dt = DecisionTreeRegressor(max_depth=6, random_state=42)
-    dt.fit(X_train, y_train)
-    y_pred_dt = dt.predict(X_test)
-    evaluate_model("Decision Tree", dt, X_test, y_test, y_pred_dt)
+    model2 = DecisionTreeRegressor(max_depth=6, random_state=42)
+    model2.fit(xtrain, ytrain)
+    pred2 = model2.predict(xtest)
+    print("Tree done")
+    results["Tree"] = score("Tree", model2, xtest, ytest, pred2)
 
-# Step 4: Apply KMeans clustering
-def clustering(df):
+    model3 = RandomForestRegressor(n_estimators=10, random_state=42)
+    model3.fit(xtrain, ytrain)
+    pred3 = model3.predict(xtest)
+    print("Forest done")
+    results["Forest"] = score("Forest", model3, xtest, ytest, pred3)
+
+    return results
+
+# Step 4: Clustering
+def cluster(df):
     scaler = StandardScaler()
     data_scaled = scaler.fit_transform(df)
 
-    kmeans = KMeans(n_clusters=3, random_state=42)
-    labels = kmeans.fit_predict(data_scaled)
-
+    km = KMeans(n_clusters=3, random_state=42)
+    labels = km.fit_predict(data_scaled)
     df['Cluster'] = labels
 
-    # Plot clustering result
-    plt.figure(figsize=(10, 5))
-    sns.scatterplot(x='Voltage', y='Global_intensity', hue='Cluster', data=df, palette='Set2')
-    plt.title('KMeans Clustering of Electricity Usage')
-    plt.show()
+    print("Clustering done (plot disabled for now)")
+    # Optional: enable below if needed
+    # plt.figure(figsize=(8, 4))
+    # sns.scatterplot(x='Voltage', y='Global_intensity', hue='Cluster', data=df, palette='Set2')
+    # plt.title('KMeans Clustering')
+    # plt.show()
 
-# Run everything
+# Main function
 def main():
-    filepath = 'household_power_consumption.txt'  # Update path if needed
-    df = load_data(filepath)
-    print("Data loaded and cleaned.")
+    path = 'household_power_consumption.txt'  # update path if needed
+    df = load(path)
+    df = df.sample(n=50000, random_state=42)  # reduce data for speed
+    print("Data loaded and sampled")
 
-    X_train, X_test, y_train, y_test = prepare_data(df)
-    print("Data split into training and test sets.")
+    xtrain, xtest, ytrain, ytest = prepare(df)
+    print("Data split")
 
-    print("\nRegression Model Results:")
-    regression_models(X_train, X_test, y_train, y_test)
+    print("\nModel results:")
+    results = runmodels(xtrain, xtest, ytrain, ytest)
 
-    print("\nRunning KMeans clustering:")
-    clustering(df)
+    print("\nClustering:")
+    cluster(df)
+
+    print("\nFinal scores:")
+    for name in results:
+        rmse, r2 = results[name]
+        print(f"{name}: RMSE={rmse:.3f}, R2={r2:.3f}")
 
 if __name__ == '__main__':
     main()
