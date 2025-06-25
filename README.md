@@ -1,3 +1,4 @@
+#NOTE: THIS IS ONLY FOR WEEK 1. NOTES FOR OTHER WEEKS ARE IN THEIR RESPECTIVE FILES.
 TASK 1 NOTES
 
 Source: UCI Heart Disease Dataset (Cleveland) https://archive.ics.uci.edu/dataset/45/heart+disease
