@@ -1,5 +1,6 @@
 #WEEK 2
 1. FashionMNIST
+
 For this project, I implemented a convolutional neural network (CNN) using PyTorch to classify images from the FashionMNIST dataset — a collection of 28×28 grayscale images across 10 clothing categories. PyTorch was chosen for its dynamic computation graph and flexibility, making it ideal for developing and debugging deep learning models at a conceptual level, which aligns well with my academic setting and goals.
 The model architecture consists of two convolutional layers with Batch Normalization, ReLU activations, and MaxPooling, followed by a fully connected classification head with Dropout regularization to reduce overfitting. I used the Adam optimizer for efficient gradient updates, and a StepLR scheduler to reduce the learning rate halfway through training for better convergence. Data was normalized to mean 0.5 and standard deviation 0.5 to stabilize learning.
 The model was trained for 10 epochs on a batch size of 64, and achieved a test accuracy of over 92%, which is a strong result for FashionMNIST. The loss curve plotted across epochs demonstrated steady and consistent convergence, indicating effective learning without signs of overfitting or vanishing gradients.
@@ -9,8 +10,12 @@ Finally, I saved both the model and visual artifacts (loss curve, confusion matr
 <img width="451" alt="fashionoutput" src="https://github.com/user-attachments/assets/380950ec-e7a3-4006-a3cc-425de6a0e821" />
 <img width="911" alt="fashionreport" src="https://github.com/user-attachments/assets/9f895361-35a4-470f-8ce6-c3e1332188e6" />
 confusion matrix image: ![confusion_matrix](https://github.com/user-attachments/assets/936ea271-406d-4955-88d1-d96177dbf63b)
+
 loss curve image: ![loss_curve](https://github.com/user-attachments/assets/a7e024cc-b7bd-4678-a8ab-02aae188bd40)
+
 sample predictions image: ![sample_predictions](https://github.com/user-attachments/assets/310082b7-abf2-4fc4-bf48-3d153103be05)
+
+
 
 
 #WEEK 1
