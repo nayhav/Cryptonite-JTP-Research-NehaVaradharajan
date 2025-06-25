@@ -17,6 +17,22 @@ loss curve image: ![loss_curve](https://github.com/user-attachments/assets/a7e02
 sample predictions image: ![sample_predictions](https://github.com/user-attachments/assets/310082b7-abf2-4fc4-bf48-3d153103be05)
 
 
+2. ImageNet
+To solve the image classification problem effectively, I chose a transfer learning approach using the pretrained ResNet18 model from PyTorch. ResNet18 strikes a strong balance between accuracy and speed—it is lightweight enough for quick fine-tuning and inference, yet powerful due to its residual architecture. Since training a deep model from scratch requires extensive data and compute resources, leveraging a pretrained model with fine-tuning allowed me to achieve good performance on a limited custom dataset.
+My strategy was to freeze all layers of ResNet18 initially to retain the generalized image features learned from ImageNet. I then unfroze only the last residual block (layer4), enabling the model to learn domain-specific patterns in my custom dataset without disrupting earlier layers. This selective fine-tuning approach prevents overfitting and reduces the training time, while still giving the model flexibility to adapt to the target classes—car, dog, and cat.
+To customize the classifier, I replaced the final fully connected layer with a new head consisting of a linear layer, ReLU activation, dropout, and a final linear layer mapping to 3 output classes. This lightweight architecture added non-linearity and regularization while being efficient for small datasets. The model was trained using the cross-entropy loss function and Adam optimizer, which provides fast and adaptive learning. I split the dataset into an 80/20 ratio for training and validation to track overfitting and generalization.
+During inference, I built a separate dataset class to handle image loading and transformation. The model then performed predictions using softmax probabilities, and I extracted the top predicted classes. For user-friendly output, I displayed the top predictions alongside probability scores and plotted both the input image and prediction bar chart using matplotlib. Additionally, I generated a CSV file logging each image’s prediction, which is useful for batch processing and verification.
+
+<img width="455" alt="imagenet training output" src="https://github.com/user-attachments/assets/de56c98b-6290-420e-86a4-b5dd7aff0784" />
+
+<img width="556" alt="imagenet input" src="https://github.com/user-attachments/assets/fc22ef88-0079-4e01-98d3-2328bc3f1a18" />
+
+<img width="581" alt="imagenet graph" src="https://github.com/user-attachments/assets/4b33799c-0404-4ff2-8018-99d5e50a581d" />
+
+
+
+
+
 
 
 #WEEK 1
