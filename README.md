@@ -30,7 +30,18 @@ During inference, I built a separate dataset class to handle image loading and t
 <img width="581" alt="imagenet graph" src="https://github.com/user-attachments/assets/4b33799c-0404-4ff2-8018-99d5e50a581d" />
 
 
+3.Face Expression Recognition Dataset
+In this project, we tackled the task of facial expression recognition using deep learning. The goal was to classify images of human faces into different emotional categories such as happy, sad, angry, and others. This is a complex problem in computer vision due to the subtle and sometimes ambiguous nature of facial expressions, as well as variations in lighting, pose, and individual facial features.
+To build our solution, we selected PyTorch as the deep learning framework. PyTorch was chosen for its clean, flexible API and strong support for transfer learning through the torchvision library. Its ease of use, debugging capabilities, and large community made it ideal for iterative experimentation and fine-tuning, especially for image-based tasks like this one.
+Instead of training a convolutional neural network from scratch — which would require a vast amount of data and computational resources — we adopted a transfer learning approach using the ResNet-18 architecture pretrained on ImageNet. ResNet-18 is a well-established CNN known for its residual connections and efficiency. Because it has already learned to extract low-level and mid-level features from millions of images, we were able to repurpose its weights for our specific task with only minor adjustments. We replaced the final fully connected layer of ResNet-18 with a new layer suited to the number of expression classes in our dataset.
+To ensure effective training without overfitting, we froze the early layers of the network and fine-tuned the deeper layers, specifically layer4 and the final classification head. This strategy balances efficiency and adaptability, allowing the network to retain its general visual understanding while adapting to the nuances of facial emotion classification.
+We also applied data augmentation techniques such as random horizontal flips, rotations, and color jittering. These augmentations helped the model generalize better by exposing it to variations that resemble real-world scenarios. Additionally, we used a learning rate scheduler to gradually reduce the learning rate during training, which improves convergence and helps fine-tune the model’s performance.
+For evaluation, we tracked the training loss and computed validation accuracy across epochs. We further analyzed the results using a confusion matrix and a classification report to better understand class-wise performance, which is particularly important in imbalanced or subtle classification tasks like facial expression recognition.
+Overall, this approach led to a solid validation accuracy of over 64%, which is competitive for a small model trained on a limited dataset in just a few epochs. With further tuning — including extended training, early stopping, and hyperparameter optimization — this pipeline can be extended to achieve even higher performance. This project demonstrates how transfer learning can be effectively applied to solve complex visual classification problems with efficiency and accuracy.
 
+<img width="452" alt="outputfacecm" src="https://github.com/user-attachments/assets/507851b8-a385-4d17-8def-bd488735437b" />
+
+<img width="940" alt="outputface" src="https://github.com/user-attachments/assets/60874e6a-f9d4-4fbc-8a80-1f2813b2a826" />
 
 
 
