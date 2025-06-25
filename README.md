@@ -1,4 +1,19 @@
-#NOTE: THIS IS ONLY FOR WEEK 1. NOTES FOR OTHER WEEKS ARE IN THEIR RESPECTIVE FILES.
+#WEEK 2
+1. FashionMNIST
+For this project, I implemented a convolutional neural network (CNN) using PyTorch to classify images from the FashionMNIST dataset — a collection of 28×28 grayscale images across 10 clothing categories. PyTorch was chosen for its dynamic computation graph and flexibility, making it ideal for developing and debugging deep learning models at a conceptual level, which aligns well with my academic setting and goals.
+The model architecture consists of two convolutional layers with Batch Normalization, ReLU activations, and MaxPooling, followed by a fully connected classification head with Dropout regularization to reduce overfitting. I used the Adam optimizer for efficient gradient updates, and a StepLR scheduler to reduce the learning rate halfway through training for better convergence. Data was normalized to mean 0.5 and standard deviation 0.5 to stabilize learning.
+The model was trained for 10 epochs on a batch size of 64, and achieved a test accuracy of over 92%, which is a strong result for FashionMNIST. The loss curve plotted across epochs demonstrated steady and consistent convergence, indicating effective learning without signs of overfitting or vanishing gradients.
+To support qualitative understanding, I visualized sample predictions alongside their ground truth labels. Most predictions were accurate, and even the incorrect ones (e.g., a coat being classified as a shirt) were justifiable given visual similarity — reflecting the model's real-world reasoning limitations. I also included a confusion matrix and a detailed classification report to break down the model's performance across all categories, with especially strong precision and recall for classes like trousers, bags, and sneakers.
+Finally, I saved both the model and visual artifacts (loss curve, confusion matrix, and predictions), ensuring reproducibility and professional presentation. 
+
+<img width="451" alt="fashionoutput" src="https://github.com/user-attachments/assets/380950ec-e7a3-4006-a3cc-425de6a0e821" />
+<img width="911" alt="fashionreport" src="https://github.com/user-attachments/assets/9f895361-35a4-470f-8ce6-c3e1332188e6" />
+![confusion_matrix](https://github.com/user-attachments/assets/6b54bb4d-67f0-4e98-a85b-f33b4aad872b)
+![loss_curve](https://github.com/user-attachments/assets/a7e024cc-b7bd-4678-a8ab-02aae188bd40)
+![sample_predictions](https://github.com/user-attachments/assets/310082b7-abf2-4fc4-bf48-3d153103be05)
+
+
+#WEEK 1
 TASK 1 NOTES
 
 Source: UCI Heart Disease Dataset (Cleveland) https://archive.ics.uci.edu/dataset/45/heart+disease
@@ -28,3 +43,5 @@ From these results, the Linear Regression and Random Forest models performed the
 Lastly, I applied KMeans clustering on the same dataset using three clusters. The dataset was standardized before clustering. The resulting clusters were visualized using a scatterplot of Voltage vs Global Intensity, colored by cluster label. This allowed us to explore patterns in the electricity usage without a supervised target.
 
 Overall, the workflow involved structured preprocessing, applying multiple ML models, performance evaluation using RMSE and R² metrics, and an unsupervised clustering step. Among the regression models, Linear Regression was the top performer in this case, suggesting a strong linear relationship in the data. The analysis and comparison of different models helped understand how model complexity affects performance on a real-world dataset.
+
+
