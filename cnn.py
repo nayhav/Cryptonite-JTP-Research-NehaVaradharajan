@@ -135,7 +135,7 @@ for i in range(8):
 plt.tight_layout()
 os.makedirs("results", exist_ok=True)
 plt.savefig("results/sample_predictions.png")
-print("✅ Sample predictions saved to results/sample_predictions.png")
+print(" Sample predictions saved to results/sample_predictions.png")
 plt.show()
 
 
@@ -159,7 +159,7 @@ print(classification_report(all_labels, all_preds, target_names=train_dataset.cl
 import os
 os.makedirs("results", exist_ok=True)
 
-print("train_losses:", train_losses)  # 🧪 Check list contents
+print("train_losses:", train_losses) 
 
 plt.figure(figsize=(8, 5))
 plt.plot(train_losses, marker='o')
@@ -170,7 +170,7 @@ plt.grid(True)
 plt.tight_layout()
 
 plt.savefig("results/loss_curve.png")
-print("🖼️  Loss curve saved to results/loss_curve.png")
+print("️  Loss curve saved to results/loss_curve.png")
 
 plt.show()
 
