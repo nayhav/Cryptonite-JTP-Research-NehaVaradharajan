@@ -43,6 +43,22 @@ Overall, this approach led to a solid validation accuracy of over 64%, which is 
 
 <img width="940" alt="outputface" src="https://github.com/user-attachments/assets/60874e6a-f9d4-4fbc-8a80-1f2813b2a826" />
 
+4. DeepWeeds
+For this project, we tackled the DeepWeeds dataset—a real-world image classification challenge—using transfer learning with a pretrained ResNet-18 model in PyTorch. The goal was to develop a high-accuracy deep learning pipeline capable of identifying weed species from image data. We leveraged a well-established convolutional architecture (ResNet-18) pretrained on ImageNet to extract rich features while training only the classification head specific to our dataset. This approach drastically reduced training time and avoided overfitting on a relatively smaller dataset.
+
+The dataset was split into structured folders for training, validation, and testing using the provided CSV label files. Images were resized to 224x224 to match ResNet’s input dimension requirements. For the training set, we applied random horizontal flips and rotations to augment the data and improve generalization. Standard normalization using ImageNet’s mean and standard deviation was applied to align the input distribution with what the pretrained model expects.
+
+We froze all layers in ResNet-18 except the fully connected (fc) classification head. The fc layer was replaced with a custom head: a linear layer with 256 neurons, ReLU activation, dropout for regularization, and a final layer mapping to the number of weed classes. Only this head was trained initially. To push validation accuracy higher, we fine-tuned the model: unfreezing the later convolutional blocks allowed the network to better adapt to domain-specific weed features.
+
+Training was conducted for 15 epochs with the Adam optimizer and a learning rate of 1e-4. The model progressively reduced training loss from 1.0470 to 0.2767, indicating effective learning and optimization. The learning curve remained smooth and did not show overfitting, thanks to augmentation and dropout regularization. The final validation accuracy achieved was 85.60%, meeting our target.
+
+The confusion matrix revealed excellent classification performance on certain classes (e.g., classes 2, 3, and 8 with high true positives), while a few classes (like 0 and 4) had more misclassifications—indicating a need for either more data or better class-specific augmentation. Misclassifications mostly occurred between visually similar species, which is common in fine-grained recognition tasks.
+
+By combining transfer learning, fine-tuning, and strong data augmentations, we achieved robust performance on the DeepWeeds dataset. The approach is scalable and can be improved further by experimenting with deeper models (e.g., ResNet-50), adjusting learning rates per layer, or applying test-time augmentation. Additionally, integrating explainability tools like Grad-CAM could help visualize which parts of the image drive predictions, aiding trust and model refinement.
+
+<img width="306" alt="outputofdeepweeds" src="https://github.com/user-attachments/assets/cd74fa15-c10f-45e6-a0f7-6820e738e745" />
+
+<img width="940" alt="image" src="https://github.com/user-attachments/assets/44c0c26a-80d1-466f-951e-8f1508e7834b" />
 
 
 
