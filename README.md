@@ -1,3 +1,16 @@
+#WEEK 3 SPECIALIZATION 
+
+The model was trained over three epochs, and the results show consistent improvement in both training and validation performance. In the first epoch, the training loss was 0.1732, the validation loss was 0.0484, and the F1 score was 0.9278. This shows that the model had already begun to learn meaningful patterns from the data.
+
+In the second epoch, the training loss dropped significantly to 0.0319, while the validation loss decreased to 0.0329. The F1 score also improved to 0.9538, indicating that the model was not only fitting the training data well but also generalizing better to the validation set.
+
+By the third epoch, the training loss further decreased to 0.0168, and the validation loss improved slightly to 0.0303. The F1 score reached 0.9607, showing a strong overall performance and good convergence. The loss curve also supports this, with the training loss dropping steadily and the validation loss stabilizing—this suggests the model is not overfitting and has reached a strong level of accuracy.
+
+In summary, the model shows excellent training dynamics. The sharp reduction in loss and steady rise in F1 score demonstrate that it is learning effectively and generalizing well. Training for more epochs may only give minor improvements, as the model already performs very well after three epochs.
+
+
+
+
 #WEEK 2
 1. FashionMNIST
 
