@@ -1,12 +1,11 @@
-#WEEK 3 SPECIALIZATION 
-The RoBERTa-based Transformer model for Named Entity Recognition was fine-tuned over three epochs, showing strong and consistent improvements in performance. During the first epoch, the model achieved a training loss of 0.1732 and a validation loss of 0.0484. The corresponding F1 score was 0.9278, indicating that even in the early stages of fine-tuning, the pre-trained Transformer architecture was already extracting useful contextual representations for named entity labeling.
+#WEEK 3 SPECIALIZATION (edited after deadline because of the misprint of certain numbers)
+The RoBERTa-based Transformer model for Named Entity Recognition was fine-tuned over three epochs, showing strong improvements in performance. During the first epoch, the model achieved a training loss of 0.1732 and a validation loss of 0.0484. The corresponding F1 score was 0.9278, indicating that even in the early stages of fine-tuning, the pre-trained Transformer architecture was already extracting useful contextual representations for named entity labeling.
 
 In the second epoch, the training loss dropped sharply to 0.0319, while the validation loss decreased to 0.0329. The F1 score improved significantly to 0.9538. This suggests that the Transformer’s attention mechanisms and contextual embeddings were adapting well to the CoNLL-2003 dataset, allowing it to better distinguish between entity boundaries and types.
 
-By the third epoch, the training loss further decreased to 0.0168 and the validation loss to 0.0303, while the F1 score climbed to an impressive 0.9607. The model was clearly converging, with marginal gains indicating it had nearly saturated its learning capacity for this dataset under the current training configuration.
+By the third epoch, the training loss further decreased to 0.0168, and the F1 score climbed to an impressive 0.9607. However, the validation loss, while showing a slight further decrease to 0.0303, appears to be plateauing on the loss curve. This divergence, where the training loss continues to drop significantly while the validation loss shows only marginal gains and flattens, suggests the onset of overfitting. The model is becoming increasingly specialized to the training data, potentially at the expense of its generalization ability to unseen examples.
 
-The loss curve reinforces this pattern, showing a steady decrease in training loss and a plateauing validation loss. This implies that the RoBERTa model was not overfitting and was able to generalize well. Overall, the Transformer’s architecture—with its self-attention layers and deep contextual understanding—proved highly effective for the NER task, achieving near state-of-the-art results in just three epochs of fine-tuning.
-
+Overall, the Transformer’s architecture proved highly effective for the NER task, achieving near state-of-the-art results. For future iterations, strategies like early stopping based on validation loss would be crucial to prevent further overfitting and ensure the deployment of the most generalizable model.
 
 
 
