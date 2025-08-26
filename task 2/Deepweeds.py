@@ -50,7 +50,7 @@ model.fc = nn.Sequential(
 
 model = model.to(device)
 
-# Freeze nothing — fine-tune all layers
+# Fine tuning all layers
 for param in model.parameters():
     param.requires_grad = True
 

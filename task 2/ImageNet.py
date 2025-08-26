@@ -25,7 +25,6 @@ BATCH_SIZE = 16
 CSV_OUTPUT_PATH = "predictions.csv"
 TOP_K = min(5, NUM_CUSTOM_CLASSES if DO_FINE_TUNE else 1000)
 
-# Download labels if missing
 LABELS_URL = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"
 if not os.path.exists(LABELS_PATH):
     urllib.request.urlretrieve(LABELS_URL, LABELS_PATH)
@@ -90,7 +89,7 @@ if DO_FINE_TUNE:
         train_loss = 0.0
         val_loss = 0.0
 
-        # --- Training ---
+        #  Training
         for inputs, labels in train_loader:
             inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
 
@@ -102,7 +101,7 @@ if DO_FINE_TUNE:
 
             train_loss += loss.item()
 
-        # --- Validation ---
+        # Validation 
         model.eval()
         with torch.no_grad():
             for inputs, labels in val_loader:

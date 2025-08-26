@@ -11,7 +11,6 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix, classification_report
 import numpy as np
 
-# Set device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Transforms
@@ -20,7 +19,7 @@ transform = transforms.Compose([
     transforms.Normalize((0.5,), (0.5,))
 ])
 
-# Load FashionMNIST dataset
+# Loading FashionMNIST dataset
 train_dataset = datasets.FashionMNIST(root='./data', train=True, download=True, transform=transform)
 test_dataset = datasets.FashionMNIST(root='./data', train=False, download=True, transform=transform)
 

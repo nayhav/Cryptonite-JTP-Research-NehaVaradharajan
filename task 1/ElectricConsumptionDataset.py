@@ -13,25 +13,25 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.cluster import KMeans
 
-# Step 1: Load and clean the dataset
+#Loading and clean the dataset
 def load(path):
-    # Load CSV file, combine Date and Time into a single datetime column
+    # Loading CSV file, combine Date and Time into a single datetime column
     df = pd.read_csv(path, sep=';', low_memory=False, na_values='?', parse_dates=[[0, 1]],
                      infer_datetime_format=True, index_col='Date_Time')
 
-    # Drop missing values to avoid errors during training
+    # Dropping missing values to avoid errors during training
     df = df.dropna()
 
-    # Convert all values to numeric
+    # Converting all values to numeric
     for col in df.columns:
         df[col] = pd.to_numeric(df[col], errors='coerce')
 
-    # Keep only key features for this project
+    # Keeping only key features for this project
     df = df[['Global_active_power', 'Global_reactive_power', 'Voltage', 'Global_intensity']]
     df = df.dropna()
     return df
 
-# Step 2: Prepare the data for training and testing
+#Preparing the data for training and testing
 def prepare(df):
     # Separate features (input variables) and target (what we want to predict)
     x = df.drop('Global_active_power', axis=1)
@@ -44,14 +44,14 @@ def prepare(df):
     # Split into 80% training and 20% test data
     return train_test_split(x_scaled, y, test_size=0.2, random_state=42)
 
-# Step 3: Evaluate a model's predictions using RMSE and R2
+#Evaluate a model's predictions using RMSE and R2
 def score(name, model, xtest, ytest, ypred):
     rmse = np.sqrt(mean_squared_error(ytest, ypred))
     r2 = r2_score(ytest, ypred)
     print(f"{name}: RMSE={rmse:.3f}, R2={r2:.3f}")
     return rmse, r2
 
-# Step 4: Train and test three regression models
+# Train and test three regression models
 def runmodels(xtrain, xtest, ytrain, ytest):
     results = {}
 
@@ -78,7 +78,7 @@ def runmodels(xtrain, xtest, ytrain, ytest):
 
     return results
 
-# Step 5: Apply unsupervised learning (KMeans clustering)
+# Apply unsupervised learning (KMeans clustering)
 def cluster(df):
     # Standardize features before clustering
     scaler = StandardScaler()
@@ -87,7 +87,7 @@ def cluster(df):
     # Apply KMeans clustering with 3 clusters
     km = KMeans(n_clusters=3, random_state=42)
     labels = km.fit_predict(data_scaled)
-    df['Cluster'] = labels  # Add cluster labels to the original DataFrame
+    df['Cluster'] = labels  
 
     print("Clustering done")
 
@@ -103,10 +103,10 @@ def cluster(df):
 
 # Main workflow
 def main():
-    path = 'household_power_consumption.txt'  # Make sure the file is in the correct location
+    path = 'household_power_consumption.txt'
     df = load(path)
     
-    # Use a subset of the data to reduce computation time
+    # Using a subset of the data to reduce computation time
     df = df.sample(n=50000, random_state=42)
     print("Data loaded and sampled")
 

@@ -22,7 +22,7 @@ from xgboost import XGBClassifier
 # Setting a seed value to ensure results are consistent
 SEED = 42
 
-# Step 1: Load and preprocess the data
+# Load and preprocess the data
 def load_data(path):
     cols = [
         'age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg',
@@ -176,6 +176,6 @@ def main():
     print("-" * 40)
     print("Models Implemented")
 
-# Run the script
+
 if __name__ == "__main__":
     main()
