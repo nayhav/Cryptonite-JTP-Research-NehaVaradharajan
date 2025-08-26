@@ -1,4 +1,5 @@
-#WEEK 3 SPECIALIZATION (edited after deadline because of the misprint of certain numbers)
+TASK 3: NLP Specialization
+
 The RoBERTa-based Transformer model for Named Entity Recognition was fine-tuned over three epochs, showing strong and consistent improvements in performance. During the first epoch, the model achieved a training loss of 0.1732 and a validation loss of 0.0484. The corresponding F1 score was 0.9278, indicating that even in the early stages of fine-tuning, the pre-trained Transformer architecture was already extracting useful contextual representations for named entity labeling.
 
 In the second epoch, the training loss dropped sharply to 0.0319, while the validation loss decreased to 0.0329. The F1 score improved significantly to 0.9538. This suggests that the Transformer’s attention mechanisms and contextual embeddings were adapting well to the CoNLL-2003 dataset, enabling the model to more accurately identify entity boundaries and classifications.
@@ -8,7 +9,9 @@ By the third epoch, the training loss further decreased to 0.0168, and the F1 sc
 Overall, the Transformer architecture proved highly effective for the NER task, achieving near state-of-the-art performance. For future training runs, strategies such as early stopping based on validation loss or incorporating additional regularization may help prevent overfitting and ensure that the model generalizes well beyond the training set.
 
 
-#WEEK 2
+TASK 2 
+
+
 1. FashionMNIST
 
 For this project, I implemented a convolutional neural network (CNN) using PyTorch to classify images from the FashionMNIST dataset — a collection of 28×28 grayscale images across 10 clothing categories. PyTorch was chosen for its dynamic computation graph and flexibility, making it ideal for developing and debugging deep learning models at a conceptual level, which aligns well with my academic setting and goals.
@@ -54,6 +57,7 @@ Overall, this approach led to a solid validation accuracy of over 64%, which is 
 <img width="940" alt="outputface" src="https://github.com/user-attachments/assets/60874e6a-f9d4-4fbc-8a80-1f2813b2a826" />
 
 4. DeepWeeds
+
 For this project, we tackled the DeepWeeds dataset—a real-world image classification challenge—using transfer learning with a pretrained ResNet-18 model in PyTorch. The goal was to develop a high-accuracy deep learning pipeline capable of identifying weed species from image data. We leveraged a well-established convolutional architecture (ResNet-18) pretrained on ImageNet to extract rich features while training only the classification head specific to our dataset. This approach drastically reduced training time and avoided overfitting on a relatively smaller dataset.
 
 The dataset was split into structured folders for training, validation, and testing using the provided CSV label files. Images were resized to 224x224 to match ResNet’s input dimension requirements. For the training set, we applied random horizontal flips and rotations to augment the data and improve generalization. Standard normalization using ImageNet’s mean and standard deviation was applied to align the input distribution with what the pretrained model expects.
@@ -72,10 +76,10 @@ By combining transfer learning, fine-tuning, and strong data augmentations, we a
 
 
 
-#WEEK 1
-TASK 1 NOTES
+TASK 1
 
-Source: UCI Heart Disease Dataset (Cleveland) https://archive.ics.uci.edu/dataset/45/heart+disease
+
+Source: UCI Heart Disease Dataset (Cleveland) 
 
 
 This project explored binary classification of heart disease using the Cleveland dataset, where the target variable ‘num’ was binarized to represent presence (1) or absence (0) of disease. After handling missing values using median imputation and scaling features, I implemented and compared four models: Logistic Regression, Random Forest, Support Vector Classifier (SVC), and XGBoost.
@@ -84,11 +88,12 @@ Among these, Random Forest emerged as the top performer, achieving an accuracy o
 
 SVC matched Random Forest in accuracy but had a marginally lower AUC (0.944), suggesting robust decision boundaries but less reliable probability estimates. XGBoost, while typically high-performing, achieved the lowest AUC (0.927)—likely due to sensitivity to hyperparameters and the limited sample size (~300 instances).
 
-Feature importance analysis highlighted ‘thalach’, ‘oldpeak’, and ‘ca’ as key predictors, aligning with clinical intuition around heart stress test indicators. The dataset's modest imbalance (~55% class 0 vs 45% class 1) justified using ROC AUC over raw accuracy as a comparative metric. {Edited to include the reasons that a model might not be efficient enough, post deadline}
+Feature importance analysis highlighted ‘thalach’, ‘oldpeak’, and ‘ca’ as key predictors, aligning with clinical intuition around heart stress test indicators. The dataset's modest imbalance (~55% class 0 vs 45% class 1) justified using ROC AUC over raw accuracy as a comparative metric. 
 
 
 
-TASK 2 NOTES
+Source: Household Power Consumption Dataset
+
 
 I worked with the “Household Power Consumption” dataset, which contains time-series data on household electricity usage. The original dataset had several columns and some missing values. To ensure efficient processing and focus on meaningful patterns, I first cleaned the data by dropping missing values and selecting only four core features: Global Active Power, Global Reactive Power, Voltage, and Global Intensity. These were converted to numeric types, and only valid rows were retained. After this, I randomly sampled 50,000 rows from the dataset to reduce computational load while maintaining statistical integrity.
 
